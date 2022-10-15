@@ -4,19 +4,18 @@ import get_vacancies_dict_for_hh
 import get_vacancies_dict_for_sj
 
 
-def get_list(vacancies, line=0):
+def get_list(vacancies, line=1):
     head_line = [
         "Язык программирование",
         "Вакансий найдено",
         "Вакансий обработано",
         "Средняя зарплата",
     ]
-    salaries = []
+    salaries = [head_line]
     for language in vacancies:
         salaries.append(list(vacancies[language].values()))
         salaries[line].insert(0, language)
         line += 1
-    salaries.insert(0, head_line)
     return salaries
 
 
