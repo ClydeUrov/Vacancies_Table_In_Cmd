@@ -1,3 +1,5 @@
+from contextlib import suppress
+
 import requests
 
 import predict_rub_salary
@@ -13,10 +15,8 @@ def predict_salaries(vacancies, sum_salaries=0):
         sum_salaries += predict_rub_salary.predict_salary(
             payment["from"], payment["to"]
         )
-    try:
+    with suppress(ZeroDivisionError):
         return int(sum_salaries / len(salary)), len(salary)
-    except ZeroDivisionError:
-        pass
 
 
 def get_vacancies_hh(languages):

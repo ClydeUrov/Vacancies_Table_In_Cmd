@@ -2,6 +2,7 @@ import os
 
 import requests
 from dotenv import load_dotenv
+from contextlib import suppress
 
 import predict_rub_salary
 
@@ -23,10 +24,8 @@ def get_vacancies_sj(languages, api_id, count=1000):
             for content in contents["objects"]
         ]
         rub_salaries = [salary for salary in salary_prediction if salary]
-        try:
+        with suppress(ZeroDivisionError):
             average_salary = int(sum(rub_salaries) / len(rub_salaries))
-        except ZeroDivisionError:
-            pass
         vacancies[language] = {
             "vacancies_found": contents["total"],
             "vacancies_processed": len(rub_salaries),
