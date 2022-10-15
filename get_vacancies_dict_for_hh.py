@@ -1,49 +1,40 @@
 import requests
+import predict_rub_salary
 
 
-def predict_salaries_for_hh(vacancies):
-    count = sum_salaries = 0
-    for num in vacancies:
-        number = num["salary"]
-        if number and number["currency"] == "RUR":
-            count += 1
-            if number["to"] and number["from"]:
-                sum_salaries += (number["to"] + number["from"]) / 2
-            elif number["from"] and not number["to"]:
-                sum_salaries += number["from"] * 1.2
-            elif not number["from"] and number["to"]:
-                sum_salaries += number["to"] * 0.8
-        else:
-            None
-    return int(sum_salaries / count), count
+def predict_salaries(vacancies, sum_salaries=0):
+    salary = [vacancy["salary"] for vacancy in vacancies if vacancy["salary"] and vacancy["salary"]["currency"] == "RUR"]
+    for payment in salary:
+        sum_salaries += predict_rub_salary.predict_salary(payment["from"], payment["to"])
+    try:
+        return int(sum_salaries / len(salary)), len(salary)
+    except ZeroDivisionError:
+        pass
 
 
-def get_vacancies_dict_hh(languages):
-    vacancies_dict = {}
+def get_vacancies_hh(languages):
+    vacancies = {}
     for language in languages:
-        pages_count = page = 0
-        pages_number = 1
-        items = []
-        while pages_count < pages_number:
+        pages_count, page, pages_number, area, per_page = 0, 0, 1, 1, 100
+        all_vacancies = []
+        while pages_count < pages_number and page < 20:
             params = {
                 "text": f"NAME:({language})",
-                "area": 1,
+                "area": area,
                 "page": page,
-                "per_page": 100,
+                "per_page": per_page,
             }
             response = requests.get("https://api.hh.ru/vacancies/", params=params)
             response.raise_for_status()
-
-            for item in response.json()["items"]:
-                items.append(item)
-            pages_number = response.json()["found"]
+            answers = response.json()
+            all_vacancies += [vacancies for vacancies in answers["items"]]
+            pages_number = answers["found"]
             page += 1
-            pages_count = page * 100
-
-        average_salary = predict_salaries_for_hh(items)
-        vacancies_dict[language] = {
+            pages_count = page * per_page
+        average_salary, vacancies_processed = predict_salaries(all_vacancies)
+        vacancies[language] = {
             "vacancies_found": pages_number,
-            "vacancies_processed": average_salary[1],
-            "average_salary": average_salary[0],
+            "vacancies_processed": vacancies_processed,
+            "average_salary": average_salary,
         }
-    return vacancies_dict
+    return vacancies
