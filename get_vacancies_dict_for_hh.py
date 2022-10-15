@@ -1,11 +1,18 @@
 import requests
+
 import predict_rub_salary
 
 
 def predict_salaries(vacancies, sum_salaries=0):
-    salary = [vacancy["salary"] for vacancy in vacancies if vacancy["salary"] and vacancy["salary"]["currency"] == "RUR"]
+    salary = [
+        vacancy["salary"]
+        for vacancy in vacancies
+        if vacancy["salary"] and vacancy["salary"]["currency"] == "RUR"
+    ]
     for payment in salary:
-        sum_salaries += predict_rub_salary.predict_salary(payment["from"], payment["to"])
+        sum_salaries += predict_rub_salary.predict_salary(
+            payment["from"], payment["to"]
+        )
     try:
         return int(sum_salaries / len(salary)), len(salary)
     except ZeroDivisionError:

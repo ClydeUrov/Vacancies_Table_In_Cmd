@@ -1,6 +1,8 @@
 import os
-from dotenv import load_dotenv
+
 import requests
+from dotenv import load_dotenv
+
 import predict_rub_salary
 
 
@@ -14,18 +16,24 @@ def get_vacancies_sj(languages, api_id, count=1000):
         )
         response.raise_for_status()
         contents = response.json()
-        salary_prediction = [predict_rub_salary.predict_salary(content["payment_from"], content["payment_to"]) for content in contents["objects"]]
+        salary_prediction = [
+            predict_rub_salary.predict_salary(
+                content["payment_from"], content["payment_to"]
+            )
+            for content in contents["objects"]
+        ]
         rub_salaries = [salary for salary in salary_prediction if salary]
         try:
             average_salary = int(sum(rub_salaries) / len(rub_salaries))
         except ZeroDivisionError:
             pass
         vacancies[language] = {
-            "vacancies_found": contents['total'],
+            "vacancies_found": contents["total"],
             "vacancies_processed": len(rub_salaries),
             "average_salary": average_salary,
         }
     return vacancies
+
 
 def main(languages):
     load_dotenv()

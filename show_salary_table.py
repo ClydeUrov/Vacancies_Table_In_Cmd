@@ -38,10 +38,10 @@ def main():
     vacancies_hh = get_vacancies_dict_for_hh.get_vacancies_hh(languages)
     table_instance_hh = AsciiTable(get_list(vacancies_hh), title_for_hh)
 
-    # title_for_sj = "SuperJob Moscow"
-    # vacancies_sj = get_vacancies_dict_for_sj.main(languages)
-    # table_instance_sj = AsciiTable(get_list(vacancies_sj), title_for_sj)
-    print(table_instance_hh.table, '\n', table_instance_sj.table)
+    title_for_sj = "SuperJob Moscow"
+    vacancies_sj = get_vacancies_dict_for_sj.main(languages)
+    table_instance_sj = AsciiTable(get_list(vacancies_sj), title_for_sj)
+    print(table_instance_hh.table, "\n", table_instance_sj.table)
 
 
 if __name__ == "__main__":
