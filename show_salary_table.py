@@ -1,5 +1,5 @@
+import os
 from terminaltables import AsciiTable
-
 from dotenv import load_dotenv
 import get_vacancies_dict_for_hh
 import get_vacancies_dict_for_sj
