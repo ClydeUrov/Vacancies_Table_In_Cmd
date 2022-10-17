@@ -4,10 +4,12 @@ import requests
 from dotenv import load_dotenv
 from contextlib import suppress
 
-import predict_rub_salary
+import predict_rub_salary  
 
 
-def get_vacancies_sj(languages, api_id, count=1000):
+def main(languages, count=1000):
+    load_dotenv()
+    api_id = os.environ["SJ_API_ID"]
     vacancies = {}
     for language in languages:
         headers = {"X-Api-App-Id": api_id}
@@ -32,8 +34,3 @@ def get_vacancies_sj(languages, api_id, count=1000):
             "average_salary": average_salary,
         }
     return vacancies
-
-
-def main(languages):
-    load_dotenv()
-    return get_vacancies_sj(languages, os.environ["SJ_API_ID"])

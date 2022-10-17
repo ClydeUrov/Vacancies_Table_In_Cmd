@@ -19,7 +19,7 @@ def predict_salaries(vacancies, sum_salaries=0):
         return int(sum_salaries / len(salary)), len(salary)
 
 
-def get_vacancies_hh(languages):
+def main(languages):
     vacancies = {}
     for language in languages:
         pages_count, page, pages_number, area, per_page = 0, 0, 1, 1, 100
